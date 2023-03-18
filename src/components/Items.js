@@ -23,17 +23,18 @@ export default class Items extends Component {
   }
 
   setEvent() {
-    this.$target.querySelector('.addBtn').addEventListener('click', () => {
-      const { items } = this.state;
-      this.setState({ items: [...items, `item${items.length + 1}`] });
-    });
+    // render할 때마다 이벤트를 새로 등록하지 말고 이벤트 버블링을 통해 처음 랜더링 시에 모든 이벤트를 등록한다.
+    this.$target.addEventListener('click', ({ target }) => {
+      const items = [...this.state.items];
 
-    this.$target.querySelectorAll('.deleteBtn').forEach((deleteBtn) =>
-      deleteBtn.addEventListener('click', ({ target }) => {
-        const items = [...this.state.items];
+      if (target.classList.contains('addBtn')) {
+        this.setState({ items: [...items, `item${items.length + 1}`] });
+      }
+
+      if (target.classList.contains('deleteBtn')) {
         items.splice(target.dataset.index, 1);
         this.setState({ items });
-      })
-    );
+      }
+    });
   }
 }
